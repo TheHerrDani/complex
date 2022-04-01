@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before install:
+  - docker build -t herrdani/react-test -f ./client/Dockerfile.dev
+
+script:
+  - docker run herrdani/react-test npm test -- --coverage
+
+after_succes:
+  - docker build -t herrdani/multi-client ./client
+  - docker build -t herrdani/multi-server ./server
+  - docker build -t herrdani/multi-nginx ./nginx
+  - docker build -t herrdani/multi-worker ./worker
+# Log in to the Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# Take those images and push them to docker hub
+  - docker push herrdani/multi-client 
+  - docker push herrdani/multi-server
+  - docker push herrdani/multi-nginx
+  - docker push herrdani/multi-worker
