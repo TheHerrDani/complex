@@ -4,7 +4,7 @@ services:
   - docker
 
 before install:
-  - docker build -t herrdani/react-test -f ./client/Dockerfile.dev .
+  - docker build -t herrdani/react-test -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run -e CI=true herrdani/react-test npm test
